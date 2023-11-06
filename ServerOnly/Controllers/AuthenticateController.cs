@@ -84,11 +84,18 @@ namespace ServerOnly.Controllers
                 UserName = model.Username,
             };
 
+
+            //TODO-> СДЕЛАТЬ НОРМАЛЬНЫЕ ОТВЕТЫ ОТ СЕРВА!
             var result = await _userManager.CreateAsync(user, model.Password);
             if(!result.Succeeded) 
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    new Response { Status = "Error", Message = "При создании пользователя произошла ошибка! Пожалуйста проверьте данные пользователя и попробуйте снова." });
+                    new {
+                        Status = "Error", 
+                        Message = "При создании пользователя произошла ошибка!",
+                        Errors = result.Errors.ToArray()
+                    }
+                    );
             }
 
             return Ok("Пользователь успешно создан");
