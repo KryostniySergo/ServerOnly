@@ -42,14 +42,17 @@ namespace ServerOnly.Services
             return result;
         }
 
-        public MemoryStream GetMemoryStream(string TemplateName = "TestTemplateComplex.docx")
+        public MemoryStream GetMemoryStream(
+            Dictionary<string, object> data, 
+            string TemplateName = "TestTemplateComplex.docx")
         {
             string rootPath = _hostingEnvironment.ContentRootPath;
-            string templatePath = Path.Combine(rootPath, "wwwroot", "TestTemplateComplex.docx");
+            //string templatePath = Path.Combine(rootPath, "wwwroot", TemplateName);
+            string templatePath = Path.Combine(rootPath, TemplateName);
 
             // TODO -> Нужно будет придумать: пользователи смогу создавать
             // свои template
-            Dictionary<string, object> value = defaultValue;
+            Dictionary<string, object> value = data;
 
             MemoryStream memoryStream = new MemoryStream();
             MiniWord.SaveAsByTemplate(memoryStream, templatePath, value);

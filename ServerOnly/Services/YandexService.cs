@@ -1,5 +1,6 @@
 ﻿using ServerOnly.DB.ResponseYA;
 using ServerOnly.Interfaces;
+using System.Linq;
 using System.Net;
 using System.Text;
 
@@ -62,6 +63,31 @@ namespace ServerOnly.Services
                 _logger.LogError("GetResponse->" + exeption.Message);
                 return new ResponseFromYa() { Done = false };
             }
+        }
+
+        public Dictionary<string, object> CreateTextTemplate(ResponseFromYa? response)
+        {
+            _stringBuilder.Clear();
+            var TemplatePhrases = new HashSet<string> { "наименование", "пациент", "заключение", "врач" };
+            var resultDict = new Dictionary<string, object>();
+
+            if (response == null)
+            {
+                foreach (var item in TemplatePhrases)
+                {
+                    resultDict.Add(item, "Не получилось");
+                }
+            }
+            for (int i = 0; i < response.Response.Chunks.Count; i++)
+            {
+                if (TemplatePhrases.Contains(response.Response.Chunks[i].Alternatives[0].Text.ToLower()))
+                {
+                    resultDict.Add(response.Response.Chunks[i].Alternatives[0].Text.ToLower(),
+                        response.Response.Chunks[i + 1].Alternatives[0].Text.ToLower());
+                }
+            }
+
+            return resultDict;
         }
 
         public string GetFullText(ResponseFromYa? response)

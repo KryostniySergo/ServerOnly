@@ -2,6 +2,6 @@
 {
     public interface IDocument
     {
-        MemoryStream GetMemoryStream(string TemplateName);
+        MemoryStream GetMemoryStream(Dictionary<string, object> data, string TemplateName);
     }
 }
